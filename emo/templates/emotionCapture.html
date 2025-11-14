@@ -1,0 +1,551 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotisement - Video Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --light-gray: #e2e8f0;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--dark);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-logo i {
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .page-container {
+            padding: 7rem 2rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            font-size: 1.1rem;
+        }
+
+        /* Video Gallery */
+        .video-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+            gap: 2rem;
+        }
+
+        .video-card {
+            background: var(--dark);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .video-content {
+            display: flex;
+            padding: 1.5rem;
+            gap: 1.5rem;
+        }
+
+        .video-player {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            border-radius: var(--border-radius);
+            aspect-ratio: 16/9;
+            background: #000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        video:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .video-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+
+        .video-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .video-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .video-tag {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--accent);
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.6);
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--border-radius);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-text {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Recording Indicator */
+        #recordingIndicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(239, 68, 68, 0.9);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+            z-index: 1000;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .video-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .video-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-content {
+                flex-direction: column;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .page-container {
+                padding: 6rem 1.5rem 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .video-content {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.75rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .video-title {
+                font-size: 1.25rem;
+            }
+            
+            .video-description {
+                font-size: 0.95rem;
+            }
+            
+            #recordingIndicator {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}" class="nav-logo">
+            <i class="fas fa-play-circle"></i>
+            <span>Emotisement</span>
+        </a>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+            <a href="{% url 'home' %}" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="{% url 'signout' %}" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">Video Gallery</h1>
+            <p class="page-subtitle">Your premium video collection</p>
+        </div>
+
+        {% if videos %}
+            <div class="video-gallery">
+                {% for video in videos %}
+                <div class="video-card">
+                    <div class="video-content">
+                        <div class="video-player">
+                            <video controls onclick="openInNewTab('{{ MEDIA_URL }}{{ video.video_file }}', '{{ video.id }}')">
+                                <source src="{{ MEDIA_URL }}{{ video.video_file }}" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="video-info">
+                            <div>
+                                <h3 class="video-title">{{ video.title }}</h3>
+                                <p class="video-description">{{ video.description }}</p>
+                                <div class="video-meta">
+                                    {% for tag in video.tags.split %}
+                                    <span class="video-tag">{{ tag }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-video-slash empty-icon"></i>
+                <p class="empty-text">Your video collection is empty</p>
+                <a href="/upload/" class="btn btn-primary">
+                    <i class="fas fa-upload"></i>
+                    Upload Videos
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="recordingIndicator">
+        <i class="fas fa-circle"></i>
+        <span>Recording in progress...</span>
+    </div>
+
+    <script>
+        function openInNewTab(videoUrl, id) {
+            document.getElementById('recordingIndicator').style.display = 'none';
+            const newWindow = window.open(videoUrl, '_blank');
+
+            newWindow.onload = function () {
+                const videoEl = newWindow.document.querySelector('video');
+
+                if (!videoEl) {
+                    console.error('No video element found in new window.');
+                    return;
+                }
+
+                const newButton = newWindow.document.createElement('button');
+                newButton.textContent = 'Generate Report';
+                newButton.onclick = function () {
+                    newWindow.document.write('<p>Button clicked!</p>');
+                    window.location.href = videoUrl;
+                };
+                newWindow.document.body.appendChild(newButton);
+
+                let mediaRecorder;
+                let chunks = [];
+                let mediaStream;
+
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+
+                function startRecording() {
+                    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                        .then(stream => {
+                            mediaStream = stream;
+                            mediaRecorder = new MediaRecorder(stream);
+                            chunks = [];
+
+                            mediaRecorder.ondataavailable = event => {
+                                chunks.push(event.data);
+                            };
+
+                            mediaRecorder.onstop = () => {
+                                stopMediaStream();
+                                const blob = new Blob(chunks, { type: 'video/webm' });
+                                const videoBlobUrl = URL.createObjectURL(blob);
+
+                                const tempVideo = document.createElement('video');
+                                tempVideo.src = videoBlobUrl;
+                                tempVideo.addEventListener('loadedmetadata', () => {
+                                    const formData = new FormData();
+                                    chunks.forEach((chunk, index) => {
+                                        formData.append('video_chunk_' + index, chunk);
+                                    });
+                                    formData.append('width', tempVideo.videoWidth);
+                                    formData.append('height', tempVideo.videoHeight);
+                                    formData.append('videoduration', tempVideo.duration * 1000);
+                                    formData.append('id', id);
+
+                                    fetch('/predict/', {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: {
+                                            'X-CSRFToken': getCookie('csrftoken')
+                                        }
+                                    })
+                                    .then(response => {
+                                        if (response.ok) return response.blob();
+                                        throw new Error('Network error.');
+                                    })
+                                    .then(processedVideoBlob => {
+                                        const processedVideoUrl = URL.createObjectURL(processedVideoBlob);
+                                        console.log('Processed video:', processedVideoUrl);
+                                    })
+                                    .catch(error => {
+                                        console.error('Upload error:', error);
+                                    });
+                                });
+
+                                document.getElementById('recordingIndicator').style.display = 'none';
+                            };
+
+                            mediaRecorder.start();
+                            document.getElementById('recordingIndicator').style.display = 'flex';
+                        })
+                        .catch(error => {
+                            console.error('Camera error:', error);
+                        });
+                }
+
+                function stopMediaStream() {
+                    if (mediaStream) {
+                        mediaStream.getTracks().forEach(track => track.stop());
+                        mediaStream = null;
+                    }
+                    document.getElementById('recordingIndicator').style.display = 'none';
+                }
+
+                // Start recording on play
+                videoEl.addEventListener('play', () => {
+                    console.log('Video playing — start recording');
+                    startRecording();
+                });
+
+                // Stop recording on pause
+                videoEl.addEventListener('pause', () => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        console.log('Video paused — stop recording');
+                        mediaRecorder.stop();
+                    }
+                });
+
+                // Stop recording on end
+                videoEl.addEventListener('ended', () => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        console.log('Video ended — stop recording');
+                        mediaRecorder.stop();
+                    }
+                });
+            };
+        }
+    </script>
+</body>
+</html>
